@@ -69,7 +69,7 @@ jobs:
   # yes | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) sdkmanager "system-images;android-31;default;x86_64"
   # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
       - name: Detox build
-        run: JAVA_HOME=$(/usr/libexec/java_home -v 11) detox build --configuration android.emu.debug
+        run: JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox build --configuration android.emu.debug
 
       - name: Boot emulator
         env:
@@ -90,7 +90,7 @@ jobs:
         run: |
           npm start &
           METRO_BUNDLER_PID=$!
-          JAVA_HOME=$(/usr/libexec/java_home -v 11) detox test --configuration android.emu.debug
+          JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox test --configuration android.emu.debug
           DETOX_EXIT_CODE=$?
           exit $DETOX_EXIT_CODE
 
