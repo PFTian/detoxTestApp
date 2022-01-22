@@ -32,11 +32,11 @@ jobs:
           distribution: "temurin"
           java-version: 8
 
-      - name: Install JDK 11
+      - name: Install JDK 17
         uses: actions/setup-java@v2
         with:
           distribution: "temurin"
-          java-version: 11
+          java-version: 17
 
       - name: Install emulator and create avd
         run: |
@@ -68,11 +68,9 @@ jobs:
       # yes | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) sdkmanager "system-images;android-31;default;x86_64"
       # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
       - name: Detox build
-        run: JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox build --configuration android.emu.debug
+        run: npx detox build --configuration android.emu.debug
 
       - name: Boot emulator
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
         run: |
           echo "Starting emulator"
           $ANDROID_HOME/platform-tools/adb devices
@@ -104,6 +102,6 @@ jobs:
           echo '---------- Run the app with npm run android --------'
           npm run android
           echo '---------- Detox test --------'
-          JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox test --configuration android.emu.debug
+          npx detox test --configuration android.emu.debug
           DETOX_EXIT_CODE=$?
           exit $DETOX_EXIT_CODE
