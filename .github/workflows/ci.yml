@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16.x
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install project npm dependencies
         run: npm ci
@@ -29,13 +29,13 @@ jobs:
       - name: Install JDK 8
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 8
 
       - name: Install JDK 11
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 11
 
       - name: Install emulator and create avd
@@ -55,46 +55,45 @@ jobs:
           $ANDROID_HOME/tools/emulator -port 18725 -verbose -no-window -no-audio -gpu swiftshader_indirect @Pixel_5_API_31 &
           echo '----------Show Devices--------------'
           JAVA_HOME=$(/usr/libexec/java_home -v 1.8) $ANDROID_HOME/platform-tools/adb devices
-        
+
       #     which emulator
       #     JAVA_HOME=$(/usr/libexec/java_home -v 1.8) sdkmanager "system-images;android-31;default;x86_64"
       #     JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
       #     emulator -list-avds
 
       - name: Show Devices
-        run:
-          JAVA_HOME=$(/usr/libexec/java_home -v 1.8) $ANDROID_HOME/platform-tools/adb devices
+        run: JAVA_HOME=$(/usr/libexec/java_home -v 1.8) $ANDROID_HOME/platform-tools/adb devices
 
-  # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"        
-  # yes | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) sdkmanager "system-images;android-31;default;x86_64"
-  # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
+      # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
+      # yes | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) sdkmanager "system-images;android-31;default;x86_64"
+      # echo "no" | JAVA_HOME=$(/usr/libexec/java_home -v 1.8) avdmanager create avd -n Pixel_5_API_31 -d pixel --package "system-images;android-31;default;x86_64"
       - name: Detox build
         run: JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox build --configuration android.emu.debug
 
       - name: Boot emulator
         env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
         run: |
           echo "Starting emulator"
           $ANDROID_HOME/platform-tools/adb devices
           echo "Emulator started"
 
-      - name: Gradle cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
+      # - name: Gradle cache
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ~/.gradle/caches
+      #       ~/.gradle/wrapper
+      #     key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
 
-      - name: AVD cache
-        uses: actions/cache@v2
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-31
+      # - name: AVD cache
+      #   uses: actions/cache@v2
+      #   id: avd-cache
+      #   with:
+      #     path: |
+      #       ~/.android/avd/*
+      #       ~/.android/adb*
+      #     key: avd-31
 
       # - name: Run an android app
       #   run:
@@ -102,6 +101,9 @@ jobs:
 
       - name: Detox Test
         run: |
+          echo '---------- Run the app with npm run android --------'
+          npm run android
+          echo '---------- Detox test --------'
           JAVA_HOME=$(/usr/libexec/java_home -v 11) npx detox test --configuration android.emu.debug
           DETOX_EXIT_CODE=$?
           exit $DETOX_EXIT_CODE
