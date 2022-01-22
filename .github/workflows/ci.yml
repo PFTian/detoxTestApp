@@ -96,9 +96,9 @@ jobs:
             ~/.android/adb*
           key: avd-31
 
-      - name: Run an android app
-        run:
-          npm run android
+      # - name: Run an android app
+      #   run:
+      #     npm run android
 
       - name: Detox Test
         run: |
